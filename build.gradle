@@ -32,6 +32,9 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     implementation("io.micronaut:micronaut-validation")
 
+    implementation("org.springframework.security:spring-security-crypto:5.5.0")
+    implementation group: 'commons-logging', name: 'commons-logging', version: '1.2'
+
 }
 
 
