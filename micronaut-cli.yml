@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: csi3370.team2
+testFramework: junit
+sourceLanguage: java
+buildTool: gradle
+features: [annotation-api, app-name, flyway, gradle, h2, http-client, java, java-application, jdbc-hikari, junit, logback, netty-server, readme, security-annotations, security-jwt, shade, sql-jdbi, yaml]
