@@ -11,7 +11,15 @@ micronaut:
               secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
 datasources:
   default:
-    url: jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+    # Use this for in-memory run
+    # url: jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
+
+    # Use this for devel
+    url: jdbc:h2:tcp://localhost:9092/~/db/collected
     driverClassName: org.h2.Driver
     username: sa
-    password: ''
+    password: '1234'
+liquibase:
+  datasources:
+    default:
+      change-log: 'classpath:db/liquibase-changelog.xml'
