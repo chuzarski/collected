@@ -1,6 +1,6 @@
 package csi3370.team2.util;
 
-import csi3370.team2.domain.User;
+import csi3370.team2.models.User;
 import csi3370.team2.services.UserService;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.scheduling.TaskExecutors;

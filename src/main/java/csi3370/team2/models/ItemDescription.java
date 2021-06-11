@@ -1,4 +1,4 @@
-package models;
+package csi3370.team2.models;
 
 import java.util.Date;
 

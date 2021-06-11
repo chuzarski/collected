@@ -1,6 +1,6 @@
 package csi3370.team2.delegates;
 
-import csi3370.team2.domain.User;
+import csi3370.team2.models.User;
 import csi3370.team2.services.UserService;
 import csi3370.team2.util.PasswordHasher;
 import io.micronaut.runtime.http.scope.RequestScope;

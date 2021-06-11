@@ -1,9 +1,8 @@
-package delegates;
+package csi3370.team2.delegates;
 
-import io.micronaut.http.HttpResponse;
 import io.micronaut.runtime.http.scope.RequestScope;
-import models.ItemListItem;
-import services.ItemService;
+import csi3370.team2.models.ItemListItem;
+import csi3370.team2.services.ItemService;
 
 import javax.inject.Inject;
 

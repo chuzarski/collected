@@ -1,6 +1,6 @@
-package services;
+package csi3370.team2.services;
 
-import models.ItemListItem;
+import csi3370.team2.models.ItemListItem;
 
 public interface ItemService {
 

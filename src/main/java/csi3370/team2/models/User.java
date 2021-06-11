@@ -1,4 +1,4 @@
-package csi3370.team2.domain;
+package csi3370.team2.models;
 
 public class User {
 
