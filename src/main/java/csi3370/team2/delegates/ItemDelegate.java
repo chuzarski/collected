@@ -26,7 +26,8 @@ public class ItemDelegate {
     }
 
     public void modifyItem(int itemId){
-        itemService.updateItem(itemId);
+        ItemListItem item = new ItemListItem();
+        itemService.updateItem(item);
     }
     
     public ItemListItem fetchItem(int itemId){
