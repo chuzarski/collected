@@ -28,14 +28,7 @@ public class ItemDelegate {
             int owningListId
     ) {
 
-        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
-        Date release = null;
-        try {
-            release = format.parse(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        ItemListItem item = new ItemListItem(name, itemType, description, release, rating, owningListId);
+        ItemListItem item = new ItemListItem(name, itemType, description, parseDateString(dateString), rating, owningListId);
         itemService.saveNewItem(item);
     }
 
@@ -43,48 +36,37 @@ public class ItemDelegate {
         itemService.removeItem(itemId);
     }
 
-    public void modifyItem(int itemId){
+    public ItemListItem modifyItem(int itemId, String name, String type, String date){
         ItemListItem item = new ItemListItem();
+        item.setItemId(itemId);
+        item.setName(name);
+        item.setType(type);
+        item.setReleaseDate(parseDateString(date));
+
         itemService.updateItem(item);
+        return itemService.loadItemById(itemId);
     }
     
     public ItemListItem fetchItem(int itemId){
-        ItemListItem item = new ItemListItem();
-        return  item;
-    }
-    
-    public ItemListItem setRatingForItemById(int itemId, int rating){
-        ItemListItem item = new ItemListItem();
-        return  item;
+        return itemService.loadItemById(itemId);
     }
 
-    public ItemListItem setRatingForItemByID(int itemId, int rating) {
-        ItemListItem item = new ItemListItem();
-        return  item;
+    public void setRatingForItemByID(int itemId, int rating) {
+        itemService.setRatingForItemById(itemId, rating);
     }
 
-    public ItemListItem addWishListItem() {
-        ItemListItem item = new ItemListItem();
-        return  item;
+    public void updateItemDescription(int itemId, String description) {
+        itemService.updateItemDescription(itemId, description);
     }
 
-    public ItemListItem removeWishListItemById(int itemId) {
-        ItemListItem item = new ItemListItem();
-        return  item;
-    }
+    private Date parseDateString(String date) {
 
-    public ItemListItem modifyWishListItem(int itemId) {
-        ItemListItem item = new ItemListItem();
-        return  item;
-    }
-
-    public ItemListItem fetchWishListItem(int itemId) {
-        ItemListItem item = new ItemListItem();
-        return  item;
-    }
-
-    public ItemListItem updateItemDescription(int itemId, String description) {
-        ItemListItem item = new ItemListItem();
-        return  item;
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+        try {
+            return format.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

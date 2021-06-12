@@ -31,7 +31,6 @@ public class ItemDatabaseService implements ItemService {
                     .bind("rating", item.getRating())
                     .bind("parentList", item.getMemberListId())
                     .execute();
-
         }
     }
 
@@ -47,6 +46,7 @@ public class ItemDatabaseService implements ItemService {
     public void updateItem(@NonNull ItemListItem item) {
         try(Handle handle = jdbi.open()) {
             handle.createUpdate("UPDATE ITEM_DESCRIPTIONS SET NAME = :itemName, ITEM_TYPE = :itemType, RELEASE_DATE = :itemDate WHERE DESCRIPTION_ID = (SELECT ITEM_DESCRIPTION_ID FROM ITEM_LIST_ITEMS WHERE LIST_ITEM_ID = :itemId LIMIT 1)")
+                    .bind("itemId", item.getItemId())
                     .bind("itemName", item.getName())
                     .bind("itemType", item.getType())
                     .bind("itemDate", item.getReleaseDate())
