@@ -1,0 +1,61 @@
+package csi3370.team2.services;
+
+import csi3370.team2.delegates.ItemDelegate;
+import csi3370.team2.models.ItemListItem;
+import io.micronaut.core.annotation.NonNull;
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Jdbi;
+
+import javax.inject.Singleton;
+
+
+@Singleton
+public class ItemDatabaseService implements ItemService {
+
+    private Jdbi jdbi;
+
+    public ItemDatabaseService(Jdbi jdbi) {
+        this.jdbi = jdbi;
+    }
+    @Override
+    public void saveNewItem(@NonNull ItemListItem item) {
+
+        try(Handle handle = jdbi.open()) {
+
+            handle.createUpdate("INSERT INTO ITEM_DESCRIPTIONS (NAME, ITEM_TYPE, DESCRIPTION, RELEASE_DATE) VALUES (:name, :type, :description, :date); INSERT INTO ITEM_LIST_ITEMS (RATING, ITEM_DESCRIPTION_ID, ITEM_LIST_ID) VALUES ( :rating, (SELECT SCOPE_IDENTITY() LIMIT 1), :parentList)")
+                    .bind("name", item.getName())
+                    .bind("type", item.getType())
+                    .bind("description", item.getDescription())
+                    .bind("date", item.getReleaseDate())
+                    .bind("name", item.getName())
+                    .bind("rating", item.getRating())
+                    .bind("parentList", item.getMemberListId())
+                    .execute();
+
+        }
+    }
+
+    @Override
+    public void removeItem(int itemId) {
+
+        try(Handle handle = jdbi.open()) {
+            handle.createUpdate("DELETE FROM ITEM_DESCRIPTIONS WHERE DESCRIPTION_ID = (SELECT DESCRIPTION_ID FROM ITEM_DESCRIPTIONS JOIN ITEM_LIST_ITEMS IL on ITEM_DESCRIPTIONS.DESCRIPTION_ID = IL.ITEM_DESCRIPTION_ID WHERE IL.LIST_ITEM_ID = :itemId)")
+                    .bind("itemId", itemId).execute();
+        }
+    }
+
+    @Override
+    public void updateItem(@NonNull ItemListItem item) {
+
+    }
+
+    @Override
+    public ItemListItem loadItemById(int itemId) {
+        return null;
+    }
+
+    @Override
+    public void setRatingForItemById(int itemId, int rating) {
+
+    }
+}
