@@ -70,4 +70,9 @@ public class ItemDatabaseService implements ItemService {
     public void setRatingForItemById(int itemId, int rating) {
 
     }
+
+    @Override
+    public void updateItemDescription(int itemId, String description) {
+
+    }
 }

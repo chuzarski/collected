@@ -9,5 +9,5 @@ public interface ItemService {
     void updateItem(ItemListItem item);
     ItemListItem loadItemById(int itemId);
     void setRatingForItemById(int itemId, int rating);
-
+    void updateItemDescription(int itemId, String description);
 }
