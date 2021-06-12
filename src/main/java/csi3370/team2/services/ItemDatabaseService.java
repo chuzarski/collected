@@ -45,7 +45,13 @@ public class ItemDatabaseService implements ItemService {
 
     @Override
     public void updateItem(@NonNull ItemListItem item) {
-
+        try(Handle handle = jdbi.open()) {
+            handle.createUpdate("UPDATE ITEM_DESCRIPTIONS SET NAME = :itemName, ITEM_TYPE = :itemType, RELEASE_DATE = :itemDate WHERE DESCRIPTION_ID = (SELECT ITEM_DESCRIPTION_ID FROM ITEM_LIST_ITEMS WHERE LIST_ITEM_ID = :itemId LIMIT 1)")
+                    .bind("itemName", item.getName())
+                    .bind("itemType", item.getType())
+                    .bind("itemDate", item.getReleaseDate())
+                    .execute();
+        }
     }
 
     @Override
@@ -69,10 +75,21 @@ public class ItemDatabaseService implements ItemService {
     @Override
     public void setRatingForItemById(int itemId, int rating) {
 
+        try(Handle handle = jdbi.open()) {
+            handle.createUpdate("UPDATE ITEM_LIST_ITEMS SET RATING = :rating WHERE LIST_ITEM_ID = :itemId")
+                    .bind("rating", rating)
+                    .bind("itemId", itemId)
+                    .execute();
+        }
     }
 
     @Override
     public void updateItemDescription(int itemId, String description) {
-
+        try(Handle handle = jdbi.open()) {
+            handle.createUpdate("UPDATE ITEM_DESCRIPTIONS SET DESCRIPTION = :description WHERE DESCRIPTION_ID = (SELECT ITEM_DESCRIPTION_ID FROM ITEM_LIST_ITEMS WHERE LIST_ITEM_ID = :itemId LIMIT 1)")
+                    .bind("description", description)
+                    .bind("itemId", itemId)
+                    .execute();
+        }
     }
 }
