@@ -4,16 +4,26 @@ import com.nimbusds.jose.shaded.json.JSONUtil;
 
 public class ItemList {
 
+    private int listId;
     private String name;
     private String listType;
     private String sortPreference;
     private int ownerId;
 
-    public ItemList(String name, String listType, String sortPreference, int ownerId){
+    public ItemList(int listId, String name, String listType, String sortPreference, int ownerId){
+        this.listId = listId;
         this.name = name;
         this.listType = listType;
         this.sortPreference = sortPreference;
         this.ownerId = ownerId;
+    }
+
+    public int getListId() {
+        return listId;
+    }
+
+    public void setListId(int listId) {
+        this.listId = listId;
     }
 
     public String getName() {

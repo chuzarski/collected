@@ -6,6 +6,8 @@ import io.micronaut.core.annotation.NonNull;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
+import java.sql.ResultSet;
+
 public class ListDatabaseService implements ListService {
 
     private Jdbi jdbi;
@@ -25,40 +27,60 @@ public class ListDatabaseService implements ListService {
         try (Handle handle = jdbi.open()) {
 
             handle.createUpdate(
-                    "INSERT INTO ITEM_LIST (NAME, LIST_TYPE, SORT_PREFERENCE, OWNER_ID)" +
-                            "VALUES (" + name +
-                            "," + listType +
-                            "," + sortPreference +
-                            "," + ownerId +
-                            ")").execute();
-
+                    "INSERT INTO ITEM_LIST (LIST_NAME, LIST_TYPE, SORT_PREFERENCE, OWNER_ID) VALUES (:name, :listType, :sortPreference, :ownerId)")
+                    .bind("name", name)
+                    .bind("listType", listType)
+                    .bind("sortPreference", sortPreference)
+                    .bind("ownerId", ownerId)
+                    .execute();
         }
 
     }
 
     @Override
     public void removeList(int listId) {
-
+        try (Handle handle = jdbi.open()) {
+            handle.createUpdate("DELETE FROM ITEM_DESCRIPTIONS WHERE DESCRIPTION_ID = (SELECT ITEM_DESCRIPTION_ID FROM ITEM_LIST_ITEMS WHERE ITEM_LIST_ID = :listId); DELETE FROM ITEM_LISTS WHERE ITEM_LIST_ID = :listId")
+                    .bind("listId", listId)
+                    .execute();
+        }
     }
 
     @Override
-    public void renameList(int listID, String listName) {//Modify List Name
-        /*try (Handle handle = jdbi.open()) {
+    public void renameList(int listId, String listName) {//Modify List Name
+        try (Handle handle = jdbi.open()) {
 
             handle.createUpdate(
-                    "UPDATE ITEM_LIST SET NAME =" + listName + " WHERE)").execute();
+                    "UPDATE ITEM_LIST SET LIST_NAME = :listName WHERE ITEM_LIST_ID = :listId)")
+                    .bind("listName", listName)
+                    .bind("listId", listId)
+                    .execute();
 
-        }*/
+        }
     }
 
     @Override
-    public ItemList loadListById(int itemId) {
-        ItemList itemList = new ItemList("Test","Wish","yes",1);//Random info to remove error
-        return itemList;
+    public ItemList loadListById(int listId) {
+
+        try(Handle handle = jdbi.open()) {
+            return handle.createQuery("SELECT * FROM ITEM_LIST WHERE ITEM_LIST_ID = :listId")
+                    .bind("listId", listId)
+                    .map((rs, ctx) -> new ItemList(
+                            rs.getInt("ITEM_LIST_ID"),
+                            rs.getString("LIST_NAME"),
+                            rs.getString("LIST_TYPE"),
+                            rs.getString("SORT_PREFERENCE"),
+                            rs.getInt("OWNER_ID")
+                    )).one();
+        }
     }
 
     @Override
-    public void setSortPreference(int itemId, String sortOrder) {//Modify List Sort Preference
+    public void setSortPreference(int listId, String sortOrder) {//Modify List Sort Preference
+        try (Handle handle = jdbi.open()) {
 
+            handle.createUpdate("UPDATE ITEM_LIST SET SORT_PREFERENCE = :sortOrder WHERE ITEM_LIST_ID = :listId")
+                        .bind("listId", listId).bind("sortOrder", sortOrder).execute();
+        }
     }
 }
