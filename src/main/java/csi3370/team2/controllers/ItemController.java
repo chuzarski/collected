@@ -8,6 +8,7 @@ import io.micronaut.security.rules.SecurityRule;
 import csi3370.team2.models.ItemListItem;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 
 @Controller
 public class ItemController {
@@ -21,8 +22,17 @@ public class ItemController {
 
     @Post("/item/add")
     @Secured(SecurityRule.IS_AUTHENTICATED)
-    public HttpResponse<String> addItem(){
-        itemDelegate.addItem();
+    public HttpResponse<String> addItem(@Body HashMap<String, String> data){
+
+
+        itemDelegate.addItem(
+                data.get("name"),
+                data.get("type"),
+                data.get("description"),
+                data.get("release_date"),
+                Integer.parseInt(data.get("rating")),
+                Integer.parseInt(data.get("parent_list"))
+        );
         return HttpResponse.ok();
     }
 
@@ -30,8 +40,7 @@ public class ItemController {
     @Secured(SecurityRule.IS_AUTHENTICATED)
     public HttpResponse<Object> removeItem(@PathVariable int itemId){
         itemDelegate.removeItem(itemId);
-        return HttpResponse.ok();
-        //System.out.println("Error Removing Item");
+        return HttpResponse.ok("Deleted!");
     }
 
     @Post("/item/modify/{itemId}")

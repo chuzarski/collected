@@ -5,6 +5,12 @@ import csi3370.team2.models.ItemListItem;
 import csi3370.team2.services.ItemService;
 
 import javax.inject.Inject;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Date;
 
 @RequestScope
 public class ItemDelegate {
@@ -16,8 +22,23 @@ public class ItemDelegate {
         this.itemService = itemService;
     }
 
-    public void addItem() {
-        ItemListItem item = new ItemListItem();
+    public void addItem(
+            String name,
+            String itemType,
+            String description,
+            String dateString,
+            int rating,
+            int owningListId
+    ) {
+
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+        Date release = null;
+        try {
+            release = format.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        ItemListItem item = new ItemListItem(name, itemType, description, release, rating, owningListId);
         itemService.saveNewItem(item);
     }
 
@@ -26,7 +47,7 @@ public class ItemDelegate {
     }
 
     public void modifyItem(int itemId){
-        itemService.updateItem(itemId);
+        itemService.updateItem(null); //fixme make sure this is passed an ItemListItem
     }
     
     public ItemListItem fetchItem(int itemId){
