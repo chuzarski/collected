@@ -47,12 +47,10 @@ public class ItemDelegate {
     }
 
     public void modifyItem(int itemId){
-<<<<<<< HEAD
-        itemService.updateItem(null); //fixme make sure this is passed an ItemListItem
-=======
+
         ItemListItem item = new ItemListItem();
         itemService.updateItem(item);
->>>>>>> origin/ItemService6-11-21
+
     }
     
     public ItemListItem fetchItem(int itemId){
