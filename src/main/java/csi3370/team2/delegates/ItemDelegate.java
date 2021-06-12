@@ -7,9 +7,6 @@ import csi3370.team2.services.ItemService;
 import javax.inject.Inject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Date;
 
 @RequestScope
@@ -47,10 +44,8 @@ public class ItemDelegate {
     }
 
     public void modifyItem(int itemId){
-
         ItemListItem item = new ItemListItem();
         itemService.updateItem(item);
-
     }
     
     public ItemListItem fetchItem(int itemId){
