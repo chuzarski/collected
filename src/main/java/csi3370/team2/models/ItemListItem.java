@@ -4,14 +4,26 @@ import java.util.Date;
 
 public class ItemListItem extends ItemDescription {
 
+    private int itemId;
     private int rating;
     private int memberListId;
+
+    public ItemListItem(int itemId, String name, String type, String description, Date releaseDate, int rating, int parentList) {
+        super(name, type, description, releaseDate);
+        this.itemId = itemId;
+        this.rating = rating;
+        this.memberListId = parentList;
+    }
+
+
 
     public ItemListItem(String name, String type, String description, Date releaseDate, int rating, int parentList) {
         super(name, type, description, releaseDate);
         this.memberListId = parentList;
         this.rating = rating;
     }
+
+
 
     public ItemListItem() {
         super(null, null, null, null);
@@ -31,5 +43,13 @@ public class ItemListItem extends ItemDescription {
 
     public void setMemberListId(int memberListId) {
         this.memberListId = memberListId;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 }

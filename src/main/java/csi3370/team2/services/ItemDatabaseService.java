@@ -37,7 +37,6 @@ public class ItemDatabaseService implements ItemService {
 
     @Override
     public void removeItem(int itemId) {
-
         try(Handle handle = jdbi.open()) {
             handle.createUpdate("DELETE FROM ITEM_DESCRIPTIONS WHERE DESCRIPTION_ID = (SELECT DESCRIPTION_ID FROM ITEM_DESCRIPTIONS JOIN ITEM_LIST_ITEMS IL on ITEM_DESCRIPTIONS.DESCRIPTION_ID = IL.ITEM_DESCRIPTION_ID WHERE IL.LIST_ITEM_ID = :itemId)")
                     .bind("itemId", itemId).execute();
@@ -51,7 +50,20 @@ public class ItemDatabaseService implements ItemService {
 
     @Override
     public ItemListItem loadItemById(int itemId) {
-        return null;
+
+        try(Handle handle = jdbi.open()) {
+            return handle.createQuery("SELECT * FROM ITEM_LIST_ITEMS IL JOIN ITEM_DESCRIPTIONS ID on ID.DESCRIPTION_ID = IL.ITEM_DESCRIPTION_ID WHERE LIST_ITEM_ID = :itemId")
+                    .bind("itemId", itemId)
+                    .map((rs, ctx) -> new ItemListItem(
+                            rs.getInt("LIST_ITEM_ID"),
+                            rs.getString("NAME"),
+                            rs.getString("ITEM_TYPE"),
+                            rs.getString("DESCRIPTION"),
+                            rs.getDate("RELEASE_DATE"),
+                            rs.getInt("RATING"),
+                            rs.getInt("ITEM_LIST_ID")
+                    )).one();
+        }
     }
 
     @Override

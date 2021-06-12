@@ -9,6 +9,9 @@ public class ItemDescription {
     protected String description;
     protected Date releaseDate;
 
+    public ItemDescription() {
+    }
+
     public ItemDescription(String name, String type, String description, Date releaseDate)
     {
         this.name = name;
