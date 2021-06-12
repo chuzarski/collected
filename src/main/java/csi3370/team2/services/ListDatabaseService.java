@@ -1,13 +1,14 @@
 package csi3370.team2.services;
 
 import csi3370.team2.models.ItemList;
-import csi3370.team2.models.ItemListItem;
-import io.micronaut.core.annotation.NonNull;
+import csi3370.team2.util.ItemListProducer;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 
-import java.sql.ResultSet;
+import javax.inject.Singleton;
+import java.util.Set;
 
+@Singleton
 public class ListDatabaseService implements ListService {
 
     private Jdbi jdbi;
@@ -61,19 +62,39 @@ public class ListDatabaseService implements ListService {
 
     @Override
     public ItemList loadListById(int listId) {
-
+        Set<ItemList> itemSet;
         try(Handle handle = jdbi.open()) {
-            return handle.createQuery("SELECT * FROM ITEM_LIST WHERE ITEM_LIST_ID = :listId")
+            itemSet = handle.createQuery("SELECT I.ITEM_LIST_ID, I.LIST_TYPE, I. SORT_PREFERENCE, I.OWNER_ID, I.LIST_NAME, IL.LIST_ITEM_ID AS ITEM_ID, IL.RATING AS ITEM_RATING,\n" +
+                    "       ID.NAME AS ITEM_NAME, ID.ITEM_TYPE, ID.DESCRIPTION, ID.RELEASE_DATE\n" +
+                    "FROM ITEM_LIST_ITEMS IL\n" +
+                    "    JOIN ITEM_DESCRIPTIONS ID on IL.ITEM_DESCRIPTION_ID = ID.DESCRIPTION_ID\n" +
+                    "    JOIN ITEM_LISTS I on IL.ITEM_LIST_ID = I.ITEM_LIST_ID\n" +
+                    "WHERE I.LIST_TYPE = 'COLLECTION' AND I.ITEM_LIST_ID= :listId")
                     .bind("listId", listId)
-                    .map((rs, ctx) -> new ItemList(
-                            rs.getInt("ITEM_LIST_ID"),
-                            rs.getString("LIST_NAME"),
-                            rs.getString("LIST_TYPE"),
-                            rs.getString("SORT_PREFERENCE"),
-                            rs.getInt("OWNER_ID")
-                    )).one();
+                    .execute(new ItemListProducer());
         }
+        if (itemSet.isEmpty())
+            return null;
+        return (ItemList) itemSet.toArray()[0];
     }
+
+    @Override
+    public Set<ItemList> loadOwnersLists(int ownerId) {
+        Set<ItemList> itemSet;
+        try(Handle handle = jdbi.open()) {
+            itemSet = handle.createQuery("SELECT I.ITEM_LIST_ID, I.LIST_TYPE, I. SORT_PREFERENCE, I.OWNER_ID, I.LIST_NAME, IL.LIST_ITEM_ID AS ITEM_ID, IL.RATING AS ITEM_RATING,\n" +
+                    "       ID.NAME AS ITEM_NAME, ID.ITEM_TYPE, ID.DESCRIPTION, ID.RELEASE_DATE\n" +
+                    "FROM ITEM_LIST_ITEMS IL\n" +
+                    "    JOIN ITEM_DESCRIPTIONS ID on IL.ITEM_DESCRIPTION_ID = ID.DESCRIPTION_ID\n" +
+                    "    JOIN ITEM_LISTS I on IL.ITEM_LIST_ID = I.ITEM_LIST_ID\n" +
+                    "WHERE I.LIST_TYPE = 'COLLECTION' AND I.OWNER_ID = :owner")
+                    .bind("owner", ownerId)
+                    .execute(new ItemListProducer());
+        }
+
+        return itemSet;
+    }
+
 
     @Override
     public void setSortPreference(int listId, String sortOrder) {//Modify List Sort Preference

@@ -1,63 +1,41 @@
 package csi3370.team2.controllers;
 
-import io.micronaut.http.annotation.Controller;
+import csi3370.team2.delegates.ListDelegate;
+import csi3370.team2.models.ItemList;
+import io.micronaut.http.annotation.*;
 
 import io.micronaut.http.HttpResponse;
-import io.micronaut.http.annotation.Body;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.Post;
 import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 
-import java.util.HashMap;
+import java.util.Set;
 
 @Controller
 public class ListController {
 
-    int itemListID, itemId, listId;
-    String sort;
+    ListDelegate delegate;
 
-    @Get("/HelloWorld")
-    @Secured(SecurityRule.IS_ANONYMOUS)
-    public HttpResponse<String> handleHelloWorld(){
-        return HttpResponse.ok("Hello World");
+
+    public ListController(ListDelegate delegate) {
+        this.delegate = delegate;
     }
 
-    @Post("/EchoMessage")
-    @Secured(SecurityRule.IS_ANONYMOUS)
-    public HttpResponse<String> handleEcho(@Body HashMap<String, String> body){
-        return HttpResponse.ok(body.get("message"));
+    @Get("/list/all")
+    @Secured(SecurityRule.IS_AUTHENTICATED)
+    public HttpResponse<Set<ItemList>> handleViewItemLists(Authentication authDetails) {
+        int uid = Math.toIntExact((long) authDetails.getAttributes().get("uid"));
+        return HttpResponse.ok(delegate.fetchAllListsForUserId(uid));
     }
 
+    @Get("/list/{itemId}")
+    @Secured(SecurityRule.IS_AUTHENTICATED)
+    public HttpResponse<ItemList> handleFetchList(@PathVariable("itemId") int itemId) {
+        ItemList itemList = delegate.fetchListById(itemId);
 
-    @Post("/first")
-    @Secured(SecurityRule.IS_ANONYMOUS)
-    public HttpResponse<String> addItemList(@Body HashMap<String, String> body) {
-        return HttpResponse.ok(body.get("gone"));
-    }
-
-    @Post("/second")
-    @Secured(SecurityRule.IS_ANONYMOUS)
-    public HttpResponse<String> removeItemList(@Body HashMap<String, String> body){
-        return HttpResponse.ok(body.get("umbrella"));
-    }
-
-    @Post("/third")
-    @Secured(SecurityRule.IS_ANONYMOUS)
-    public HttpResponse<String> renameItemList(@Body HashMap<String, String> body) {
-        return HttpResponse.ok(body.get("letter"));
-    }
-
-    @Post("/fourth")
-    @Secured(SecurityRule.IS_ANONYMOUS)
-    public HttpResponse<String> handleViewItemList(@Body HashMap<String, String> body) {
-        return HttpResponse.ok(body.get("friday"));
-    }
-
-    @Post("/fifth")
-    @Secured(SecurityRule.IS_ANONYMOUS)
-    public HttpResponse<String> fetchSortedList(@Body HashMap<String, String> body) {
-        return HttpResponse.ok(body.get("soon"));
+        if (itemList == null)
+            return HttpResponse.notFound();
+        return HttpResponse.ok(itemList);
     }
 }
 

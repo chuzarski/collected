@@ -2,6 +2,8 @@ package csi3370.team2.models;
 
 import com.nimbusds.jose.shaded.json.JSONUtil;
 
+import java.util.List;
+
 public class ItemList {
 
     private int listId;
@@ -9,6 +11,7 @@ public class ItemList {
     private String listType;
     private String sortPreference;
     private int ownerId;
+    private List<ItemListItem> items;
 
     public ItemList(int listId, String name, String listType, String sortPreference, int ownerId){
         this.listId = listId;
@@ -56,5 +59,13 @@ public class ItemList {
 
     public void setOwnerId(int ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public List<ItemListItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ItemListItem> items) {
+        this.items = items;
     }
 }
