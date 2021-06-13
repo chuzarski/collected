@@ -51,16 +51,7 @@ public class ItemListProducer implements ResultProducer<Set<ItemList>> {
             // initialize the key
             keyedItemLists.put(rs.getString("LIST_NAME"), new ArrayList<>());
         }
-
-        keyedItemLists.get(rs.getString("LIST_NAME")).add(new ItemListItem(
-                rs.getInt("ITEM_ID"),
-                rs.getString("ITEM_NAME"),
-                rs.getString("ITEM_TYPE"),
-                rs.getString("DESCRIPTION"),
-                rs.getDate("RELEASE_DATE"),
-                rs.getInt("ITEM_RATING"),
-                rs.getInt("ITEM_LIST_ID")
-        ));
+        addItemListItemToKey(rs);
     }
 
     private void initItemListObject(ResultSet rs) throws SQLException {
@@ -71,5 +62,23 @@ public class ItemListProducer implements ResultProducer<Set<ItemList>> {
                 rs.getString("SORT_PREFERENCE"),
                 rs.getInt("OWNER_ID")
                 ));
+
+    }
+
+    private void addItemListItemToKey(ResultSet rs) throws SQLException {
+        ItemListItem item = new ItemListItem(
+                rs.getInt("ITEM_ID"),
+                rs.getString("ITEM_NAME"),
+                rs.getString("ITEM_TYPE"),
+                rs.getString("DESCRIPTION"),
+                rs.getDate("RELEASE_DATE"),
+                rs.getInt("ITEM_RATING"),
+                rs.getInt("ITEM_LIST_ID")
+        );
+
+        if (item.getName() == null && item.getType() == null && item.getDescription() == null && item.getReleaseDate() == null)
+            return; // don't add this to our list
+
+        keyedItemLists.get(rs.getString("LIST_NAME")).add(item);
     }
 }

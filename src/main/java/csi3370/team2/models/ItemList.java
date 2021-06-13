@@ -21,6 +21,9 @@ public class ItemList {
         this.ownerId = ownerId;
     }
 
+    public ItemList() {
+    }
+
     public int getListId() {
         return listId;
     }

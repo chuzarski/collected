@@ -18,23 +18,32 @@ public class ListDatabaseService implements ListService {
     }
 
     @Override
-    public void createList(ItemList itemList) {
+    public ItemList createList(ItemList itemList) {
 
         String name = itemList.getName();
         String listType = itemList.getListType();
         String sortPreference = itemList.getSortPreference();
         int ownerId = itemList.getOwnerId();
+        Integer listId;
 
         try (Handle handle = jdbi.open()) {
 
             handle.createUpdate(
-                    "INSERT INTO ITEM_LIST (LIST_NAME, LIST_TYPE, SORT_PREFERENCE, OWNER_ID) VALUES (:name, :listType, :sortPreference, :ownerId)")
+                    "INSERT INTO ITEM_LISTS (LIST_NAME, LIST_TYPE, SORT_PREFERENCE, OWNER_ID) VALUES (:name, :listType, :sortPreference, :ownerId)")
                     .bind("name", name)
                     .bind("listType", listType)
                     .bind("sortPreference", sortPreference)
                     .bind("ownerId", ownerId)
                     .execute();
+            listId = handle.createQuery("SELECT ITEM_LIST_ID FROM ITEM_LISTS WHERE LIST_NAME = :name AND OWNER_ID = :owner")
+                    .bind("name", name)
+                    .bind("owner", ownerId)
+                    .mapTo(Integer.class).one();
+
+            itemList.setListId(listId.intValue());
         }
+
+        return itemList;
 
     }
 
@@ -52,7 +61,7 @@ public class ListDatabaseService implements ListService {
         try (Handle handle = jdbi.open()) {
 
             handle.createUpdate(
-                    "UPDATE ITEM_LIST SET LIST_NAME = :listName WHERE ITEM_LIST_ID = :listId)")
+                    "UPDATE ITEM_LISTS SET LIST_NAME = :listName WHERE ITEM_LIST_ID = :listId")
                     .bind("listName", listName)
                     .bind("listId", listId)
                     .execute();
@@ -64,12 +73,12 @@ public class ListDatabaseService implements ListService {
     public ItemList loadListById(int listId) {
         Set<ItemList> itemSet;
         try(Handle handle = jdbi.open()) {
-            itemSet = handle.createQuery("SELECT I.ITEM_LIST_ID, I.LIST_TYPE, I. SORT_PREFERENCE, I.OWNER_ID, I.LIST_NAME, IL.LIST_ITEM_ID AS ITEM_ID, IL.RATING AS ITEM_RATING,\n" +
+            itemSet = handle.createQuery("SELECT IL.ITEM_LIST_ID, IL.LIST_TYPE, IL. SORT_PREFERENCE, IL.OWNER_ID, IL.LIST_NAME, ILI.LIST_ITEM_ID AS ITEM_ID, ILI.RATING AS ITEM_RATING,\n" +
                     "       ID.NAME AS ITEM_NAME, ID.ITEM_TYPE, ID.DESCRIPTION, ID.RELEASE_DATE\n" +
-                    "FROM ITEM_LIST_ITEMS IL\n" +
-                    "    JOIN ITEM_DESCRIPTIONS ID on IL.ITEM_DESCRIPTION_ID = ID.DESCRIPTION_ID\n" +
-                    "    JOIN ITEM_LISTS I on IL.ITEM_LIST_ID = I.ITEM_LIST_ID\n" +
-                    "WHERE I.LIST_TYPE = 'COLLECTION' AND I.ITEM_LIST_ID= :listId")
+                    "FROM ITEM_LISTS IL\n" +
+                    "LEFT JOIN ITEM_LIST_ITEMS ILI on IL.ITEM_LIST_ID = ILI.ITEM_LIST_ID\n" +
+                    "LEFT JOIN ITEM_DESCRIPTIONS ID on ILI.ITEM_DESCRIPTION_ID = ID.DESCRIPTION_ID\n" +
+                    "WHERE IL.LIST_TYPE = 'COLLECTION' AND IL.ITEM_LIST_ID = :listId")
                     .bind("listId", listId)
                     .execute(new ItemListProducer());
         }
@@ -82,12 +91,12 @@ public class ListDatabaseService implements ListService {
     public Set<ItemList> loadOwnersLists(int ownerId) {
         Set<ItemList> itemSet;
         try(Handle handle = jdbi.open()) {
-            itemSet = handle.createQuery("SELECT I.ITEM_LIST_ID, I.LIST_TYPE, I. SORT_PREFERENCE, I.OWNER_ID, I.LIST_NAME, IL.LIST_ITEM_ID AS ITEM_ID, IL.RATING AS ITEM_RATING,\n" +
+            itemSet = handle.createQuery("SELECT IL.ITEM_LIST_ID, IL.LIST_TYPE, IL. SORT_PREFERENCE, IL.OWNER_ID, IL.LIST_NAME, ILI.LIST_ITEM_ID AS ITEM_ID, ILI.RATING AS ITEM_RATING,\n" +
                     "       ID.NAME AS ITEM_NAME, ID.ITEM_TYPE, ID.DESCRIPTION, ID.RELEASE_DATE\n" +
-                    "FROM ITEM_LIST_ITEMS IL\n" +
-                    "    JOIN ITEM_DESCRIPTIONS ID on IL.ITEM_DESCRIPTION_ID = ID.DESCRIPTION_ID\n" +
-                    "    JOIN ITEM_LISTS I on IL.ITEM_LIST_ID = I.ITEM_LIST_ID\n" +
-                    "WHERE I.LIST_TYPE = 'COLLECTION' AND I.OWNER_ID = :owner")
+                    "FROM ITEM_LISTS IL\n" +
+                    "LEFT JOIN ITEM_LIST_ITEMS ILI on IL.ITEM_LIST_ID = ILI.ITEM_LIST_ID\n" +
+                    "LEFT JOIN ITEM_DESCRIPTIONS ID on ILI.ITEM_DESCRIPTION_ID = ID.DESCRIPTION_ID\n" +
+                    "WHERE IL.LIST_TYPE = 'COLLECTION' AND IL.OWNER_ID = :owner")
                     .bind("owner", ownerId)
                     .execute(new ItemListProducer());
         }
@@ -100,7 +109,7 @@ public class ListDatabaseService implements ListService {
     public void setSortPreference(int listId, String sortOrder) {//Modify List Sort Preference
         try (Handle handle = jdbi.open()) {
 
-            handle.createUpdate("UPDATE ITEM_LIST SET SORT_PREFERENCE = :sortOrder WHERE ITEM_LIST_ID = :listId")
+            handle.createUpdate("UPDATE ITEM_LISTS SET SORT_PREFERENCE = :sortOrder WHERE ITEM_LIST_ID = :listId")
                         .bind("listId", listId).bind("sortOrder", sortOrder).execute();
         }
     }

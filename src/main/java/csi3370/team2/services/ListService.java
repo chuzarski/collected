@@ -6,9 +6,9 @@ import java.util.Set;
 
 public interface ListService {
 
-    void createList(ItemList itemList);
+    ItemList createList(ItemList itemList);
     void removeList(int listId);
-    void renameList(int listID, String listName);
+    void renameList(int listId, String listName);
     ItemList loadListById(int listId);
     Set<ItemList> loadOwnersLists(int ownerId);
     void setSortPreference(int listId, String sortOrder);
