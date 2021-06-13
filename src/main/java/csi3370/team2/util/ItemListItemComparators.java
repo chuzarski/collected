@@ -15,22 +15,18 @@ https://www.javatpoint.com/how-to-compare-dates-in-java
 @Singleton
 public class ItemListItemComparators {
 
-    public static final NameComparator COMPARE_NAME = new NameComparator();
-    public static final DateComparator COMPARE_DATE = new DateComparator();
-    public static final RatingComparator COMPARE_RATING = new RatingComparator();
-
-    HashMap<String, Comparator<ItemListItem>> comparatorLookupTable;
+    private HashMap<String, Comparator<ItemListItem>> comparatorLookupTable;
 
     public ItemListItemComparators() {
         comparatorLookupTable = new HashMap<>();
 
         // all of our sort methods
-        comparatorLookupTable.put("RATING", ItemListItemComparators.COMPARE_RATING);
-        comparatorLookupTable.put("RATING_REVERSE", ItemListItemComparators.COMPARE_RATING.reversed());
-        comparatorLookupTable.put("DATE", ItemListItemComparators.COMPARE_DATE);
-        comparatorLookupTable.put("DATE_REVERSE", ItemListItemComparators.COMPARE_DATE.reversed());
-        comparatorLookupTable.put("NAME", ItemListItemComparators.COMPARE_NAME);
-        comparatorLookupTable.put("NAME_REVERSE", ItemListItemComparators.COMPARE_NAME.reversed());
+        comparatorLookupTable.put("RATING", new RatingComparator());
+        comparatorLookupTable.put("RATING_REVERSE", new RatingComparator().reversed());
+        comparatorLookupTable.put("DATE", new DateComparator());
+        comparatorLookupTable.put("DATE_REVERSE", new DateComparator().reversed());
+        comparatorLookupTable.put("NAME", new NameComparator());
+        comparatorLookupTable.put("NAME_REVERSE", new NameComparator().reversed());
     }
 
     public Comparator<ItemListItem> getComparator(String sortDirection) {

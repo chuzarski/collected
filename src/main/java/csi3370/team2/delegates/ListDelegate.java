@@ -5,7 +5,6 @@ import csi3370.team2.services.ListService;
 import csi3370.team2.util.ItemListItemComparators;
 import io.micronaut.runtime.http.scope.RequestScope;
 
-import javax.management.RuntimeErrorException;
 import java.util.Set;
 
 @RequestScope
