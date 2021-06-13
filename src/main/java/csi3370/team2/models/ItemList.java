@@ -2,6 +2,7 @@ package csi3370.team2.models;
 
 import com.nimbusds.jose.shaded.json.JSONUtil;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class ItemList {
@@ -70,5 +71,11 @@ public class ItemList {
 
     public void setItems(List<ItemListItem> items) {
         this.items = items;
+    }
+
+    public void applySortPreference(Comparator<ItemListItem> sortComparator) {
+        if (items.isEmpty())
+            return; // don't sort an empty list
+        items.sort(sortComparator);
     }
 }

@@ -71,9 +71,19 @@ public class ListController {
 
     @Post("/list/{listId}/sort/{direction}")
     @Secured(SecurityRule.IS_AUTHENTICATED)
-    public HttpResponse<String> handleSort(@PathVariable int listId, @PathVariable String direction, @Body HashMap<String, String> data) {
+    public HttpResponse<ItemList> handleSort(@PathVariable int listId, @PathVariable String direction) {
+        ItemList list;
+        delegate.setListSortPreferenceForListId(listId, direction);
+        list = delegate.fetchListById(listId);
 
-        return HttpResponse.ok();
+        return HttpResponse.ok(list);
+    }
+
+    @Get("/list/sortmethods")
+    @Secured(SecurityRule.IS_ANONYMOUS)
+    public HttpResponse<Set<String>> fetchValidSortMethods() {
+        Set<String> sortMethods = delegate.fetchValidSortMethods();
+        return HttpResponse.ok(sortMethods);
     }
 
 }
