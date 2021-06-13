@@ -18,14 +18,14 @@ public class ListDelegate {
         this.comparators = comparators;
     }
 
-    public Set<ItemList> fetchAllListsForUserId(int userId) {
-        Set<ItemList> lists = listService.loadOwnersLists(userId);
+    public Set<ItemList> fetchAllListsForUserId(int userId, String type) {
+        Set<ItemList> lists = listService.loadOwnersLists(userId, type);
 
         for (ItemList list : lists) {
             list.applySortPreference(comparators.getComparator(list.getSortPreference()));
         }
 
-        return listService.loadOwnersLists(userId);
+        return lists;
     }
 
     public ItemList fetchListById(int listId) {

@@ -13,7 +13,6 @@ import javax.inject.Singleton;
 public class UserDatabaseService implements UserService{
 
     private Jdbi jdbi;
-    private Logger log = LoggerFactory.getLogger("UserDatabaseService");
 
     public UserDatabaseService(Jdbi datasource) {
         this.jdbi = datasource;
@@ -29,8 +28,7 @@ public class UserDatabaseService implements UserService{
                     .bind("email", user.getEmail())
                     .execute();
         } catch (UnableToExecuteStatementException e) {
-            //fixme This should throw an error which is handled at the controller level
-            log.warn("Duplicate username registration attempt");
+            throw new RuntimeException("User already registered");
         }
     }
 

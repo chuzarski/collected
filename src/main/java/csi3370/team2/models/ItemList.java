@@ -1,11 +1,13 @@
 package csi3370.team2.models;
 
-import com.nimbusds.jose.shaded.json.JSONUtil;
 
 import java.util.Comparator;
 import java.util.List;
 
 public class ItemList {
+
+    public static final String TYPE_COLLECTION = "COLLECTION";
+    public static final String TYPE_WISHLIST = "WISHLIST";
 
     private int listId;
     private String name;

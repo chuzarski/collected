@@ -10,6 +10,6 @@ public interface ListService {
     void removeList(int listId);
     void renameList(int listId, String listName);
     ItemList loadListById(int listId);
-    Set<ItemList> loadOwnersLists(int ownerId);
+    Set<ItemList> loadOwnersLists(int ownerId, String type);
     void setSortPreference(int listId, String sortOrder);
 }

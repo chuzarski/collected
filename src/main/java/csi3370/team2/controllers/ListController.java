@@ -10,6 +10,7 @@ import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Set;
 
 @Controller
@@ -26,7 +27,14 @@ public class ListController {
     @Secured(SecurityRule.IS_AUTHENTICATED)
     public HttpResponse<Set<ItemList>> handleViewItemLists(Authentication authDetails) {
         int uid = Math.toIntExact((long) authDetails.getAttributes().get("uid"));
-        return HttpResponse.ok(delegate.fetchAllListsForUserId(uid));
+        return HttpResponse.ok(delegate.fetchAllListsForUserId(uid, ItemList.TYPE_COLLECTION));
+    }
+
+    @Get("/list/wishlists")
+    @Secured(SecurityRule.IS_AUTHENTICATED)
+    public HttpResponse<Set<ItemList>> handleViewWishlists(Authentication authDetails) {
+        int uid = Math.toIntExact((long) authDetails.getAttributes().get("uid"));
+        return HttpResponse.ok(delegate.fetchAllListsForUserId(uid, ItemList.TYPE_WISHLIST));
     }
 
     @Get("/list/{listId}")

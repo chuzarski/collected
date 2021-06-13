@@ -42,9 +42,7 @@ public class ListDatabaseService implements ListService {
 
             itemList.setListId(listId.intValue());
         }
-
         return itemList;
-
     }
 
     @Override
@@ -65,7 +63,6 @@ public class ListDatabaseService implements ListService {
                     .bind("listName", listName)
                     .bind("listId", listId)
                     .execute();
-
         }
     }
 
@@ -88,7 +85,7 @@ public class ListDatabaseService implements ListService {
     }
 
     @Override
-    public Set<ItemList> loadOwnersLists(int ownerId) {
+    public Set<ItemList> loadOwnersLists(int ownerId, String type) {
         Set<ItemList> itemSet;
         try(Handle handle = jdbi.open()) {
             itemSet = handle.createQuery("SELECT IL.ITEM_LIST_ID, IL.LIST_TYPE, IL. SORT_PREFERENCE, IL.OWNER_ID, IL.LIST_NAME, ILI.LIST_ITEM_ID AS ITEM_ID, ILI.RATING AS ITEM_RATING,\n" +
@@ -96,8 +93,9 @@ public class ListDatabaseService implements ListService {
                     "FROM ITEM_LISTS IL\n" +
                     "LEFT JOIN ITEM_LIST_ITEMS ILI on IL.ITEM_LIST_ID = ILI.ITEM_LIST_ID\n" +
                     "LEFT JOIN ITEM_DESCRIPTIONS ID on ILI.ITEM_DESCRIPTION_ID = ID.DESCRIPTION_ID\n" +
-                    "WHERE IL.LIST_TYPE = 'COLLECTION' AND IL.OWNER_ID = :owner")
+                    "WHERE IL.LIST_TYPE = :type AND IL.OWNER_ID = :owner")
                     .bind("owner", ownerId)
+                    .bind("type", type)
                     .execute(new ItemListProducer());
         }
 

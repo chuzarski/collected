@@ -5,6 +5,9 @@ micronaut:
     authentication: bearer
     token:
       jwt:
+        generator:
+          access-token:
+            expiration: 7200
         signatures:
           secret:
             generator:
