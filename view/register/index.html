@@ -10,16 +10,33 @@
 	<title>Register - Collected</title>
 
     <script>
-handleRegister = function() {
-details = {};
-details.username = document.getElementById("username").value;
-details.email = document.getElementById("email").value;
-details.password = document.getElementById("pass").value;
-data = details;
-const res = await axios.post('https://httpbin.org/post', data);
-res.data.data;
-res.data.headers['Content-Type']; 
-}
+		handleRegister = function() {
+					var username = document.getElementById("username").value
+					var email = document.getElementById("email").value
+					var password = document.getElementById("password").value
+
+					if (username == null || email == null || password == null) {
+						console.log("Null val - handle this")
+						return
+					}
+
+					var details = {
+						username: username,
+						email: email,
+						password: password
+					}
+
+					console.log("posting")
+					console.log(details)
+
+					axios.post('http://collected.chuzarski.net:8080/register', details).then(response => {
+						console.log(response)
+						console.log("Handle registration here")
+						alert('registered')
+					}).catch(reason => {
+						alert('User already exists!')
+					})
+				}
     </script> 
 
 </head>
@@ -70,7 +87,7 @@ res.data.headers['Content-Type'];
                             <input class="w-full bg-drabya-gray border-gray-500 appearance-none border p-4 font-light leading-tight focus:outline-none focus:shadow-outline" type="email" name="email" id="email" placeholder="Email"> </div>
                         <div class="mb-4">
 						<label class="block text-md font-light mb-2" for="password">Password</label>
-						<input class="w-full bg-drabya-gray border-gray-500 appearance-none border p-4 font-light leading-tight focus:outline-none focus:shadow-outline" type="password" name="password" id="pass" placeholder="Password"> </div>
+						<input class="w-full bg-drabya-gray border-gray-500 appearance-none border p-4 font-light leading-tight focus:outline-none focus:shadow-outline" type="password" name="password" id="password" placeholder="Password"> </div>
 					<div class="flex items-center justify-between mb-5"> <button onclick="handleRegister()" href="./home" class="bg-green-600 flex-initial ml-auto justify-items-end hover:bg-green-700 text-white font-semibold py-2 px-6 rounded focus:outline-none focus:shadow-outline">
           Register
                     </button> </div>
