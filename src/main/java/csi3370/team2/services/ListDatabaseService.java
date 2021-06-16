@@ -35,10 +35,11 @@ public class ListDatabaseService implements ListService {
                     .bind("sortPreference", sortPreference)
                     .bind("ownerId", ownerId)
                     .execute();
-            listId = handle.createQuery("SELECT ITEM_LIST_ID FROM ITEM_LISTS WHERE LIST_NAME = :name AND OWNER_ID = :owner")
+            listId = handle.createQuery("SELECT ITEM_LIST_ID FROM ITEM_LISTS WHERE LIST_NAME = :name AND OWNER_ID = :owner AND LIST_TYPE = :listType ORDER BY ITEM_LIST_ID DESC")
                     .bind("name", name)
                     .bind("owner", ownerId)
-                    .mapTo(Integer.class).one();
+                    .bind("listType", itemList.getListType())
+                    .mapTo(Integer.class).first();
 
             itemList.setListId(listId.intValue());
         }
@@ -75,7 +76,7 @@ public class ListDatabaseService implements ListService {
                     "FROM ITEM_LISTS IL\n" +
                     "LEFT JOIN ITEM_LIST_ITEMS ILI on IL.ITEM_LIST_ID = ILI.ITEM_LIST_ID\n" +
                     "LEFT JOIN ITEM_DESCRIPTIONS ID on ILI.ITEM_DESCRIPTION_ID = ID.DESCRIPTION_ID\n" +
-                    "WHERE IL.LIST_TYPE = 'COLLECTION' AND IL.ITEM_LIST_ID = :listId")
+                    "WHERE IL.ITEM_LIST_ID = :listId")
                     .bind("listId", listId)
                     .execute(new ItemListProducer());
         }

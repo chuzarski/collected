@@ -24,7 +24,6 @@ public class ItemController {
     @Secured(SecurityRule.IS_AUTHENTICATED)
     public HttpResponse<String> addItem(@Body HashMap<String, String> data){
 
-
         itemDelegate.addItem(
                 data.get("name"),
                 data.get("type"),
