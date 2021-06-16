@@ -18,7 +18,7 @@
 			<div x-data="{ open: false }" class="flex-1 md:flex">
 				<div class="flex items-center flex-1">
 					<a href="/">
-						<div class=" md:flex-1 mr-2 text-white font-bold">Collected</div>
+						<div class=" md:flex-1 mr-2 text-white select-none font-bold">Collected</div>
 					</a>
 					<button @click="open = ! open" class="md:hidden ml-auto rounded px-4 py-2 focus:outline-none bg-green-400">
 						<template x-if="!open">
@@ -33,6 +33,9 @@
 					</button>
 				</div>
 				<div x-bind:class="! open ? 'hidden' : 'block'" class="md:flex mt-1 md:mt-0 space-y-1 md:space-y-0 flex-row-reverse md:pr-48">
+					<a href="./login">
+						<div class="text-center md:ml-2 md:text-left bg-green-400 transition hover:bg-green-700 hover:text-green-600 select-none cursor-pointer px-4 py-2 rounded text-white"> Log In </div>
+					</a>
 					<a href="./register">
 						<div href="register" class="text-center md:text-left bg-white transition hover:bg-gray-700 hover:text-gray-600 select-none cursor-pointer px-4 py-2 rounded text-green-500"> Register </div>
 					</a>
@@ -44,20 +47,20 @@
 		<div class="p-4">
 			<!-- BEGIN ELEMENTS -->
 			<main class="bg-white max-w-md mx-auto p-8 md:p-12 my-10 rounded-lg lg:shadow-2xl md:shadow-lg sm:shadow-sm">
-				<h1 class="font-semibold text-3xl pb-5 text-center md:text-left">Log into Collected
+				<h1 class="font-semibold text-3xl pb-5 text-center md:text-left">Log In Your Account
     </h1>
 				<form>
 					<div class="mb-4">
-						<label class="block text-md font-light mb-2" for="email">Email</label>
-						<input class="w-full bg-drabya-gray border-gray-500 appearance-none border p-4 font-light leading-tight focus:outline-none focus:shadow-outline" type="text" name="email" id="" placeholder="Email"> </div>
-					<div class="mb-4">
+						<label class="block text-md font-light mb-2" for="username">Username</label>
+						<input class="w-full bg-drabya-gray border-gray-500 appearance-none border p-4 font-light leading-tight focus:outline-none focus:shadow-outline" type="useranme" name="username" id="" placeholder="Username"> </div>
+                        <div class="mb-4">
 						<label class="block text-md font-light mb-2" for="password">Password</label>
 						<input class="w-full bg-drabya-gray border-gray-500 appearance-none border p-4 font-light leading-tight focus:outline-none focus:shadow-outline" type="password" name="password" id="" placeholder="Password"> </div>
-					<div class="flex items-center justify-between mb-5"> <a href="./home" class="bg-indigo-600 flex-initial justify-items-start hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded focus:outline-none focus:shadow-outline">
+					<div class="flex items-center justify-between mb-5"> <a href="./home" class="bg-green-600 flex-initial justify-items-start ml-auto hover:bg-green-700 text-white font-semibold py-2 px-6 rounded focus:outline-none focus:shadow-outline">
           Log In
         </a> </div>
-					<p class="text-center text-md font-light">Don't have an account? <a href="./register" class="focus:outline-none font-light text-md text-indigo-600">Register</a></p>
-				</form>
+					<p class="text-center text-md font-light">Don't have an account? <a href="./register" class="focus:outline-none font-light text-md text-green-600 hover:text-green-400">Register</a></p>
+				</form>    
 			</main>
 			<!-- END ELEMENTS -->
 		</div>
