@@ -4,7 +4,13 @@ You made it to the dashboard
 </template>
 
 <script>
+
+import service from "../serv/index";
+
+// eslint-disable-next-line no-unused-vars
 export default {
+
+  
   name: 'Dashboard',
   props: {
     msg: String
@@ -15,6 +21,8 @@ export default {
      */
 
     createListRequest: function () {
+
+      var authedAxios = service(true)
       var listName = document.getElementById("list-name").value
       var listType = document.getElementById("list-type-select").value
 
@@ -46,6 +54,8 @@ export default {
     },
 
     fetchAllLists: function (listType) {
+
+      var authedAxios = service(true)
       var reqPath = '';
 
       if(listType == null) {

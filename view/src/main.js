@@ -1,13 +1,13 @@
 import { createApp, h } from 'vue'
 
-import HelloWorld from './components/HelloWorld.vue'
 import Register from './components/Register.vue'
 import Login from './components/Login.vue'
+import Dashboard from './components/Dashboard.vue'
 
 
 const routes = {
-    '/': HelloWorld,
-    '/login' : Login,
+    '/dashboard': Dashboard,
+    '/' : Login,
     '/register': Register
 }
 

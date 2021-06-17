@@ -1,6 +1,6 @@
 <template>
 <div style="border:1px solid black; display: inline-block;padding: 15px; border-radius: 25px;">
-    <label style="padding-right: 15px;" v-model="projectname">Name</label>
+    <label style="padding-right: 15px;">Name</label>
     <button>Add</button>
     <button>Edit</button>
     <button>Delete</button>
