@@ -10,7 +10,7 @@
 </template>
 
 <script>
-// thank you https://stackoverflow.com/questions/61874994/vue-disable-no-unused-vars-error-the-simplest-fix
+
 // eslint-disable-next-line no-unused-vars
 import service from "../serv/index";
 
