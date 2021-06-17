@@ -61,7 +61,7 @@ public class ItemDelegate {
 
     private Date parseDateString(String date) {
 
-        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         try {
             return format.parse(date);
         } catch (ParseException e) {
