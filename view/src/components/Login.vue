@@ -3,15 +3,14 @@
 
   <form method="dialog">
     <input type="text" name="" id="login-username" placeholder="Username" /><br />
-    <input type="text" name="" id="login-password" placeholder="Password" /><br />
+    <input type="password" name="" id="login-password" placeholder="Password" /><br />
     <button v-on:click="handleLogin"  class="button-primary">Login</button>
-    <button class="button">Register</button>
+    <button v-on:click="navRegister" class="button">Register</button>
   </form>
 </template>
 
 <script>
 // thank you https://stackoverflow.com/questions/61874994/vue-disable-no-unused-vars-error-the-simplest-fix
-
 // eslint-disable-next-line no-unused-vars
 import service from "../serv/index";
 
@@ -31,6 +30,13 @@ export default {
 
       // overwrite any local storage tokens we may have
       localStorage.setItem("bearer_token", token);
+    },
+    navDashboard: function() {
+        window.location.pathname = '/dashboard'
+    }, 
+    navRegister: function() {
+        console.log("Going to register")
+        window.location.pathname = '/register'
     },
     handleLogin: function () {
 
@@ -53,6 +59,7 @@ export default {
           var token = r.data.access_token;
           this.storeBearerToken(token);
             console.log(r);
+            this.navDashboard()
             return;
           }
         )
