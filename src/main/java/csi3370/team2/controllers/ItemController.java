@@ -8,6 +8,7 @@ import io.micronaut.security.rules.SecurityRule;
 import csi3370.team2.models.ItemListItem;
 
 import javax.inject.Inject;
+import java.util.HashMap;
 
 @Controller
 public class ItemController {
@@ -21,89 +22,64 @@ public class ItemController {
 
     @Post("/item/add")
     @Secured(SecurityRule.IS_AUTHENTICATED)
-    public HttpResponse<String> addItem(){
-        itemDelegate.addItem();
+    public HttpResponse<String> addItem(@Body HashMap<String, String> data){
+
+        itemDelegate.addItem(
+                data.get("name"),
+                data.get("type"),
+                data.get("description"),
+                data.get("release_date"),
+                Integer.parseInt(data.get("rating")),
+                Integer.parseInt(data.get("parent_list"))
+        );
         return HttpResponse.ok();
     }
 
-    @Delete("/item/remove/{itemId}")
+    @Delete("/item/{itemId}/remove")
     @Secured(SecurityRule.IS_AUTHENTICATED)
     public HttpResponse<Object> removeItem(@PathVariable int itemId){
         itemDelegate.removeItem(itemId);
-        return HttpResponse.ok();
-        //System.out.println("Error Removing Item");
+        return HttpResponse.ok("Deleted!");
     }
 
-    @Post("/item/modify/{itemId}")
+    @Post("/item/{itemId}/modify")
     @Secured(SecurityRule.IS_AUTHENTICATED)
-    public HttpResponse<Object> modifyItem(@PathVariable int itemId){
-        itemDelegate.modifyItem(itemId);
-        return HttpResponse.ok();
-        //System.out.println("Error Modifying Item");
+    public HttpResponse<ItemListItem> modifyItem(@PathVariable int itemId, @Body HashMap<String, String> data){
+
+        if (!(data.containsKey("name") && data.containsKey("type") && data.containsKey("release_date") ))
+            return HttpResponse.badRequest();
+
+        return HttpResponse.ok(itemDelegate.modifyItem(
+                itemId,
+                data.get("name"),
+                data.get("type"),
+                data.get("release_date")
+        ));
     }
 
-    @Get("/item/view/{itemId}")
+    @Get("/item/{itemId}")
     @Secured(SecurityRule.IS_AUTHENTICATED)
     public HttpResponse<ItemListItem> handleViewItem(@PathVariable int itemId){
-        if(String.valueOf(itemId) != null)
-            return (HttpResponse<ItemListItem>) itemDelegate.fetchItem(itemId);
-        else
-            return null;
+        ItemListItem item = itemDelegate.fetchItem(itemId);
+        return HttpResponse.ok(item);
     }
 
-    @Post("/item/rating/{itemId}/{rating}")
+    @Post("/item/{itemId}/rating/{rating}")
     @Secured(SecurityRule.IS_AUTHENTICATED)
-    public HttpResponse<ItemListItem> handleItemRating(@PathVariable("itemId") int itemId, @PathVariable("rating") int rating){
-        if(String.valueOf(itemId) != null && String.valueOf(rating) != null)
-            return (HttpResponse<ItemListItem>) itemDelegate.setRatingForItemByID(itemId, rating);
-        else
-            return null;
+    public HttpResponse<String> handleItemRating(@PathVariable("itemId") int itemId, @PathVariable("rating") int rating){
+        itemDelegate.setRatingForItemByID(itemId, rating);
+        return HttpResponse.ok("Updated");
     }
 
-    @Post("/wishlistitem/add")
+    @Post("item/{itemId}/description")
     @Secured(SecurityRule.IS_AUTHENTICATED)
-    public HttpResponse<ItemListItem> addWishListItem(){
-        return (HttpResponse<ItemListItem>) itemDelegate.addWishListItem();
-    }
+    public HttpResponse<String> updateDescription(@PathVariable int itemId, @Body HashMap<String, String> data){
 
-    @Delete("/wishlistitem/modify/{itemId}")
-    @Secured(SecurityRule.IS_AUTHENTICATED)
-    public HttpResponse<ItemListItem> removeWishListItem(@PathVariable int itemId){
-        if(String.valueOf(itemId) != null)
-            return (HttpResponse<ItemListItem>) itemDelegate.removeWishListItemById(itemId);
-        else
-            return  null;
-        //System.out.println("Error Removing WishList Item");
-    }
+        if (!data.containsKey("description"))
+            return HttpResponse.badRequest("missing description JSON key");
+        itemDelegate.updateItemDescription(itemId, data.get("description"));
 
-    @Post("/wishlistitem/modify/{itemId}")
-    @Secured(SecurityRule.IS_AUTHENTICATED)
-    public HttpResponse<ItemListItem> modifyWishListItem(@PathVariable int itemId){
-        if(String.valueOf(itemId) != null)
-            return (HttpResponse<ItemListItem>) itemDelegate.modifyWishListItem(itemId);
-        else
-            return null;
-        //System.out.println("Error Modifying WishList Item");
-    }
-
-    @Get("/wishlistitem/view/{itemId}")
-    @Secured(SecurityRule.IS_AUTHENTICATED)
-    public HttpResponse<ItemListItem> handleViewWishListItem(@PathVariable int itemId){
-        if(String.valueOf(itemId) != null)
-            return (HttpResponse<ItemListItem>) itemDelegate.fetchWishListItem(itemId);
-        else
-            return null;
-    }
-
-    @Post("item/modify/{itemId}")
-    @Secured(SecurityRule.IS_AUTHENTICATED)
-    public HttpResponse<ItemListItem> updateDescription(@PathVariable int itemId, String description){
-        //String description = "Test Description";
-        if(String.valueOf(itemId) != null)
-            return (HttpResponse<ItemListItem>) itemDelegate.updateItemDescription(itemId, description);
-        else
-            return null;
-        //System.out.println("Error Updating Item Description");
+        return HttpResponse.ok();
     }
 
 }

@@ -4,8 +4,6 @@ import csi3370.team2.models.User;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.UnableToExecuteStatementException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 
@@ -13,7 +11,6 @@ import javax.inject.Singleton;
 public class UserDatabaseService implements UserService{
 
     private Jdbi jdbi;
-    private Logger log = LoggerFactory.getLogger("UserDatabaseService");
 
     public UserDatabaseService(Jdbi datasource) {
         this.jdbi = datasource;
@@ -29,8 +26,7 @@ public class UserDatabaseService implements UserService{
                     .bind("email", user.getEmail())
                     .execute();
         } catch (UnableToExecuteStatementException e) {
-            //fixme This should throw an error which is handled at the controller level
-            log.warn("Duplicate username registration attempt");
+            throw new RuntimeException("User already registered");
         }
     }
 

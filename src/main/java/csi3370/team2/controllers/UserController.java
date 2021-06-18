@@ -31,7 +31,11 @@ public class UserController {
             if (!(jsonData.containsKey("username") || jsonData.containsKey("password") || jsonData.containsKey("email"))) {
                 return HttpResponse.badRequest("Invalid form");
             }
-            delegate.registerUser(jsonData.get("username"), jsonData.get("password"), jsonData.get("email"));
+            try {
+                delegate.registerUser(jsonData.get("username"), jsonData.get("password"), jsonData.get("email"));
+            } catch (RuntimeException e) {
+                return HttpResponse.badRequest("Duplicate username not allowed");
+            }
 
             return HttpResponse.created("Registered");
         });

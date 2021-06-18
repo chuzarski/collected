@@ -6,5 +6,8 @@ public interface ItemService {
 
     void saveNewItem(ItemListItem item);
     void removeItem(int itemId);
-    void updateItem(int itemId);
+    void updateItem(ItemListItem item);
+    ItemListItem loadItemById(int itemId);
+    void setRatingForItemById(int itemId, int rating);
+    void updateItemDescription(int itemId, String description);
 }
